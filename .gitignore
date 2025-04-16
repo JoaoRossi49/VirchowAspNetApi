@@ -1,0 +1,63 @@
+## Build results
+bin/
+obj/
+out/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+
+## Visual Studio Code
+.vscode/
+
+## Rider
+.idea/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+*.psmdcp
+*.ps1
+
+## Entity Framework
+Migrations/
+
+## Configuration
+appsettings.*.json
+secrets.json
+
+## Logs
+*.log
+logs/
+log/
+
+## OS junk files
+Thumbs.db
+.DS_Store
+
+## Publish output
+publish/
+wwwroot/dist/
+wwwroot/node_modules/
+
+## Temporary files
+*.tmp
+*.bak
+*.cache
+
+## SQLite Database
+*.db
+*.sqlite
+*.sqlite3
+
+## JetBrains Rider + ReSharper
+_ReSharper*/
+*.DotSettings.user
