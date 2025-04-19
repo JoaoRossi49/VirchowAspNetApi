@@ -1,48 +1,55 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Data;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.Data.Sqlite;
 using VirchowAspNetApi.Models;
 
 namespace VirchowAspNetApi.Services;
 
-    public class EstadoCivilService
+    public class UsuarioService
     {
         private readonly string _connectionString = "Data Source=virchow.db";
 
-        public EstadoCivilService()
+        public UsuarioService()
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var tableCmd = connection.CreateCommand();
             tableCmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS EstadoCivil (
+            CREATE TABLE IF NOT EXISTS Usuario (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Descricao TEXT NOT NULL,
+                Nome TEXT NOT NULL,
+                Login TEXT NOT NULL,
+                Senha TEXT NOT NULL,
                 Dat_fim DATE
             );";
             tableCmd.ExecuteNonQuery();
         }
 
-        public List<EstadoCivil> GetAll()
+        public Usuario GetByLogin(string Login)
         {
-            var produtos = new List<EstadoCivil>();
+            var usuario = new Usuario();
 
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM EstadoCivil WHERE Dat_fim is null";
+            cmd.CommandText = "SELECT * FROM Usuario WHERE Login = $login AND Dat_fim is null";
+            cmd.Parameters.AddWithValue("$login", Login);
 
             using var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            if (reader.Read())
             {
-                produtos.Add(new EstadoCivil
+                return new Usuario
                 {
                     Id = reader.GetInt32(0),
-                    Descricao = reader.GetString(1)
-                });
+                    Nome = reader.GetString(1),
+                    Login = reader.GetString(2),
+                    Senha = reader.GetString(3)
+                };
             }
 
-            return produtos;
+            return null;
         }
 
 }
