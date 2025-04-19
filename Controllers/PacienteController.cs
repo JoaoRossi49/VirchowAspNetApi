@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VirchowAspNetApi.Models;
 using VirchowAspNetApi.Services;
 
 namespace VirchowAspNetApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class PacienteController : ControllerBase
 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VirchowAspNetApi.DTOs;
 using VirchowAspNetApi.Models;
 using VirchowAspNetApi.Services;
@@ -6,6 +7,7 @@ using VirchowAspNetApi.Services;
 namespace VirchowAspNetApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class LaudoController : ControllerBase
 {
