@@ -14,6 +14,7 @@ namespace VirchowAspNetApi.DTOs
         public string? MedicoRequisitante { get; set; }
         public DateTime? DatExame { get; set; }
         public string DesLaudo { get; set; }
+        public int TipoLaudoId { get; set; }
     }
 
     public class LaudoComplementarRequest
@@ -28,6 +29,7 @@ namespace VirchowAspNetApi.DTOs
         public string? MedicoRequisitante { get; set; }
         public DateTime? DatExame { get; set; }
         public string DesLaudo { get; set; }
+        public int TipoLaudoId { get; set; }
         public int LaudoComplementarId { get; set; }
     }
 

@@ -3,46 +3,50 @@ using VirchowAspNetApi.Models;
 
 namespace VirchowAspNetApi.Services;
 
-    public class EstadoCivilService
+    public class TipoLaudoService
     {
         private readonly string _connectionString = "Data Source=virchow.db";
 
-        public EstadoCivilService()
+        public TipoLaudoService()
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var tableCmd = connection.CreateCommand();
             tableCmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS EstadoCivil (
+            CREATE TABLE IF NOT EXISTS TipoLaudo (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Descricao TEXT NOT NULL,
+                Nome TEXT NOT NULL,
+                Grupo TEXT NOT NULL, 
+                Conteudo TEXT NOT NULL,
                 Dat_fim DATE
             );";
             tableCmd.ExecuteNonQuery();
         }
 
-        public List<EstadoCivil> GetAll()
+        public List<TipoLaudo> GetAll()
         {
-            var estadosCivis = new List<EstadoCivil>();
+            var tipos = new List<TipoLaudo>();
 
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM EstadoCivil WHERE Dat_fim is null";
+            cmd.CommandText = "SELECT * FROM TipoLaudo WHERE Dat_fim is null";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                estadosCivis.Add(new EstadoCivil
+                tipos.Add(new TipoLaudo
                 {
                     Id = reader.GetInt32(0),
-                    Descricao = reader.GetString(1)
+                    Nome = reader.GetString(1),
+                    Grupo = reader.GetString(2),
+                    Conteudo = reader.GetString(3)
                 });
             }
 
-            return estadosCivis;
+            return tipos;
         }
 
 }

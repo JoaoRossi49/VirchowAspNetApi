@@ -18,8 +18,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<EstadoCivilService>();
-builder.Services.AddScoped<PacienteService>();
 builder.Services.AddScoped<LaudoService>();
+builder.Services.AddScoped<MascaraService>();
+builder.Services.AddScoped<PacienteService>();
+builder.Services.AddScoped<TipoLaudoService>();
 builder.Services.AddScoped<UsuarioService>();
 
 

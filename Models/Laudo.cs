@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace VirchowAspNetApi.Models
 {
     public class Laudo
@@ -14,6 +16,7 @@ namespace VirchowAspNetApi.Models
         public DateTime? DatImpressao { get; set; }
         public DateTime? DatInvalidado { get; set; }
         public int? UsuarioInvalidaId { get; set; }
+        public int TipoLaudoId { get; set; }
         public string DesLaudo { get; set; }
     }
 }
