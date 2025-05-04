@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using VirchowAspNetApi.Utils;
+using QuestPDF.Infrastructure;
 
 var senhaOriginal = "virchow2025@!";
 var hash = PasswordHasher.HashPassword(senhaOriginal);
@@ -44,7 +45,8 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
-
+//Licensa para uso do questPDF
+QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

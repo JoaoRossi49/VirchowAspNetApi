@@ -3,17 +3,17 @@ using VirchowAspNetApi.Models;
 
 namespace VirchowAspNetApi.Services;
 
-    public class TipoLaudoService
+public class TipoLaudoService
+{
+    private readonly string _connectionString = "Data Source=virchow.db";
+
+    public TipoLaudoService()
     {
-        private readonly string _connectionString = "Data Source=virchow.db";
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
 
-        public TipoLaudoService()
-        {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-
-            var tableCmd = connection.CreateCommand();
-            tableCmd.CommandText = @"
+        var tableCmd = connection.CreateCommand();
+        tableCmd.CommandText = @"
             CREATE TABLE IF NOT EXISTS TipoLaudo (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Nome TEXT NOT NULL,
@@ -21,32 +21,57 @@ namespace VirchowAspNetApi.Services;
                 Conteudo TEXT NOT NULL,
                 Dat_fim DATE
             );";
-            tableCmd.ExecuteNonQuery();
-        }
+        tableCmd.ExecuteNonQuery();
+    }
 
-        public List<TipoLaudo> GetAll()
+    public List<TipoLaudo> GetAll()
+    {
+        var tipos = new List<TipoLaudo>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT * FROM TipoLaudo WHERE Dat_fim is null";
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
         {
-            var tipos = new List<TipoLaudo>();
-
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-
-            var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM TipoLaudo WHERE Dat_fim is null";
-
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            tipos.Add(new TipoLaudo
             {
-                tipos.Add(new TipoLaudo
-                {
-                    Id = reader.GetInt32(0),
-                    Nome = reader.GetString(1),
-                    Grupo = reader.GetString(2),
-                    Conteudo = reader.GetString(3)
-                });
-            }
-
-            return tipos;
+                Id = reader.GetInt32(0),
+                Nome = reader.GetString(1),
+                Grupo = reader.GetString(2),
+                Conteudo = reader.GetString(3)
+            });
         }
+
+        return tipos;
+    }
+
+    public TipoLaudo GetById(int id)
+    {
+        var tipos = new List<TipoLaudo>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        var cmd = connection.CreateCommand();
+        cmd.CommandText = $"SELECT * FROM TipoLaudo WHERE Dat_fim is null AND ID = {id}";
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            return (new TipoLaudo
+            {
+                Id = reader.GetInt32(0),
+                Nome = reader.GetString(1),
+                Grupo = reader.GetString(2),
+                Conteudo = reader.GetString(3)
+            });
+        }
+
+        return null ;
+    }
 
 }

@@ -55,4 +55,18 @@ public class LaudoController : ControllerBase
         var novoLaudo = _service.Add(laudo);
         return CreatedAtAction(nameof(GetById), new { id = novoLaudo.Id }, novoLaudo);
     }
+
+    [HttpGet("{id}/pdf")]
+    public IActionResult ObterLaudoPdf(int id)
+    {
+        LaudoService ls = new LaudoService();
+        Laudo laudo = ls.GetById(id);
+        if (laudo != null)
+        {
+            var pdf = _service.GerarPdf(laudo);
+            return File(pdf, "application/pdf", $"laudo_{id}.pdf");
+        }
+
+        return NotFound();
+    }
 }

@@ -29,6 +29,7 @@ namespace VirchowAspNetApi.Services
                     DesLaudo TEXT,
                     DatInvalidado DATE, 
                     Usuario_invalida_id INTEGER,
+                    TipoLaudoId INTEGER,
                     Laudo_complementar_id INTEGER
                 );";
             tableCmd.ExecuteNonQuery();
@@ -47,6 +48,7 @@ namespace VirchowAspNetApi.Services
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
+                TipoLaudoService tipoLaudoService = new TipoLaudoService();
                 laudos.Add(new Laudo
                 {
                     Id = reader.GetInt32(0),
@@ -61,7 +63,9 @@ namespace VirchowAspNetApi.Services
                     DatImpressao = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
                     DesLaudo = reader.IsDBNull(10) ? null : reader.GetString(10),
                     DatInvalidado = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
-                    UsuarioInvalidaId = reader.IsDBNull(12) ? null : reader.GetInt32(12)
+                    UsuarioInvalidaId = reader.IsDBNull(12) ? null : reader.GetInt32(12),
+                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(13) ? 0 : reader.GetInt32(13))
+                    
                 });
             }
 
@@ -221,6 +225,12 @@ namespace VirchowAspNetApi.Services
             cmd.Parameters.AddWithValue("LaudoComplementarId", laudoPaiId);
 
             return cmd.ExecuteNonQuery() > 0;
+        }
+
+        public byte[] GerarPdf(Laudo laudo)
+        {
+            LaudoPdfService lp = new LaudoPdfService();
+            return lp.GerarPdf(laudo);
         }
     }
 }
