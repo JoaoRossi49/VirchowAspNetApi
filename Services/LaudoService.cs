@@ -81,6 +81,8 @@ namespace VirchowAspNetApi.Services
             cmd.CommandText = "SELECT * FROM Laudo WHERE Id = $id AND DatInvalidado is null";
             cmd.Parameters.AddWithValue("$id", id);
 
+            TipoLaudoService tipoLaudoService = new TipoLaudoService();
+
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
             {
@@ -98,7 +100,8 @@ namespace VirchowAspNetApi.Services
                     DatImpressao = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
                     DesLaudo = reader.IsDBNull(10) ? null : reader.GetString(10),
                     DatInvalidado = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
-                    UsuarioInvalidaId = reader.IsDBNull(12) ? null : reader.GetInt32(12)
+                    UsuarioInvalidaId = reader.IsDBNull(12) ? null : reader.GetInt32(12),
+                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(13) ? 0 : reader.GetInt32(13))
                 };
             }
 
@@ -113,9 +116,9 @@ namespace VirchowAspNetApi.Services
             var cmd = connection.CreateCommand();
             cmd.CommandText = @"
                 INSERT INTO Laudo 
-                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatImpressao, DesLaudo)
+                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatImpressao, DesLaudo, TipoLaudoId)
                 VALUES 
-                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), $desLaudo);
+                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId);
                 SELECT last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
@@ -127,6 +130,7 @@ namespace VirchowAspNetApi.Services
             cmd.Parameters.AddWithValue("$medico", laudo.MedicoRequisitante ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$datExame", laudo.DatExame ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$desLaudo", laudo.DesLaudo ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("$tipoLaudoId", laudo.TipoLaudoId > 0 ? laudo.TipoLaudoId : (object)DBNull.Value);
 
 
             laudo.Id = (int)(long)cmd.ExecuteScalar()!;
@@ -143,7 +147,7 @@ namespace VirchowAspNetApi.Services
                 INSERT INTO Laudo 
                 (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatImpressao, DesLaudo, Laudo_complementar_id)
                 VALUES 
-                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), $desLaudo, $laudoComplementarId);
+                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId, $laudoComplementarId);
                 SELECT last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
@@ -155,6 +159,7 @@ namespace VirchowAspNetApi.Services
             cmd.Parameters.AddWithValue("$medico", laudo.MedicoRequisitante ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$datExame", laudo.DatExame ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$desLaudo", laudo.DesLaudo ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("$tipoLaudoId", laudo.TipoLaudoId > 0 ? laudo.TipoLaudoId : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$laudoComplementarId", laudo.LaudoComplementarId);
 
 
@@ -181,6 +186,7 @@ namespace VirchowAspNetApi.Services
                     DatImpressao = $datImpressao,
                     DesLaudo = $desLaudo,
                     DatInvalidado = $datInvalidado,
+                    TipoLaudoId = $tipoLaudoId,
                     Usuario_invalida_id = $usuarioInvalidaId
                 WHERE Id = $id";
 
@@ -196,6 +202,7 @@ namespace VirchowAspNetApi.Services
             cmd.Parameters.AddWithValue("$datImpressao", laudo.DatImpressao ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$desLaudo", laudo.DesLaudo ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$datInvalidado", laudo.DatInvalidado ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("$tipoLaudoId", laudo.TipoLaudo.Id > 0 ? laudo.TipoLaudo.Id : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$usuarioInvalidaId", laudo.UsuarioInvalidaId ?? (object)DBNull.Value);
 
             return cmd.ExecuteNonQuery() > 0;
