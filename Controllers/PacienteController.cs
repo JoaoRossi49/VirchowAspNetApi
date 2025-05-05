@@ -6,7 +6,7 @@ using VirchowAspNetApi.Services;
 namespace VirchowAspNetApi.Controllers;
 
 [ApiController]
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 public class PacienteController : ControllerBase
 {

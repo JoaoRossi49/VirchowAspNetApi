@@ -43,6 +43,18 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DevCors", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddAuthorization();
 
 //Licensa para uso do questPDF
@@ -56,6 +68,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("DevCors");
 
 app.MapControllers();
 
