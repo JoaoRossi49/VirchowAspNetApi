@@ -17,6 +17,7 @@ namespace VirchowAspNetApi.Services
             tableCmd.CommandText = @"
                 CREATE TABLE IF NOT EXISTS Laudo (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    NroLaudo INTEGER,
                     NomePaciente TEXT NOT NULL,
                     Idade TEXT, 
                     EstadoCivil TEXT,
@@ -25,6 +26,7 @@ namespace VirchowAspNetApi.Services
                     DatUltimaMenstruacao DATE,
                     MedicoRequisitante TEXT,
                     DatExame DATE,
+                    DatInclusao DATE,
                     DatImpressao DATE,
                     DesLaudo TEXT,
                     DatInvalidado DATE, 
@@ -52,20 +54,21 @@ namespace VirchowAspNetApi.Services
                 laudos.Add(new Laudo
                 {
                     Id = reader.GetInt32(0),
-                    NomePaciente = reader.GetString(1),
-                    Idade = reader.IsDBNull(2) ? null : reader.GetString(2),
-                    EstadoCivil = reader.IsDBNull(3) ? null : reader.GetString(3),
-                    ResumoClinico = reader.IsDBNull(4) ? null : reader.GetString(4),
-                    HipoteseDiagnostica = reader.IsDBNull(5) ? null : reader.GetString(5),
-                    DatUltimaMenstruacao = reader.IsDBNull(6) ? null : reader.GetDateTime(6),
-                    MedicoRequisitante = reader.IsDBNull(7) ? null : reader.GetString(7),
-                    DatExame = reader.IsDBNull(8) ? null : reader.GetDateTime(8),
-                    DatImpressao = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
-                    DesLaudo = reader.IsDBNull(10) ? null : reader.GetString(10),
-                    DatInvalidado = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
-                    UsuarioInvalidaId = reader.IsDBNull(12) ? null : reader.GetInt32(12),
-                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(13) ? 0 : reader.GetInt32(13))
-                    
+                    NroLaudo = reader.IsDBNull(1) ? null : reader.GetInt32(1),
+                    NomePaciente = reader.GetString(2),
+                    Idade = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    EstadoCivil = reader.IsDBNull(4) ? null : reader.GetString(4),
+                    ResumoClinico = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    HipoteseDiagnostica = reader.IsDBNull(6) ? null : reader.GetString(6),
+                    DatUltimaMenstruacao = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
+                    MedicoRequisitante = reader.IsDBNull(8) ? null : reader.GetString(8),
+                    DatExame = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
+                    DatInclusao = reader.IsDBNull(10) ? null : reader.GetDateTime(10),
+                    DatImpressao = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
+                    DesLaudo = reader.IsDBNull(12) ? null : reader.GetString(12),
+                    DatInvalidado = reader.IsDBNull(13) ? null : reader.GetDateTime(13),
+                    UsuarioInvalidaId = reader.IsDBNull(14) ? null : reader.GetInt32(14),
+                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(15) ? 0 : reader.GetInt32(15))
                 });
             }
 
@@ -89,19 +92,21 @@ namespace VirchowAspNetApi.Services
                 return new Laudo
                 {
                     Id = reader.GetInt32(0),
-                    NomePaciente = reader.GetString(1),
-                    Idade = reader.IsDBNull(2) ? null : reader.GetString(2),
-                    EstadoCivil = reader.IsDBNull(3) ? null : reader.GetString(3),
-                    ResumoClinico = reader.IsDBNull(4) ? null : reader.GetString(4),
-                    HipoteseDiagnostica = reader.IsDBNull(5) ? null : reader.GetString(5),
-                    DatUltimaMenstruacao = reader.IsDBNull(6) ? null : reader.GetDateTime(6),
-                    MedicoRequisitante = reader.IsDBNull(7) ? null : reader.GetString(7),
-                    DatExame = reader.IsDBNull(8) ? null : reader.GetDateTime(8),
-                    DatImpressao = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
-                    DesLaudo = reader.IsDBNull(10) ? null : reader.GetString(10),
-                    DatInvalidado = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
-                    UsuarioInvalidaId = reader.IsDBNull(12) ? null : reader.GetInt32(12),
-                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(13) ? 0 : reader.GetInt32(13))
+                    NroLaudo = reader.IsDBNull(1) ? null : reader.GetInt32(1),
+                    NomePaciente = reader.GetString(2),
+                    Idade = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    EstadoCivil = reader.IsDBNull(4) ? null : reader.GetString(4),
+                    ResumoClinico = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    HipoteseDiagnostica = reader.IsDBNull(6) ? null : reader.GetString(6),
+                    DatUltimaMenstruacao = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
+                    MedicoRequisitante = reader.IsDBNull(8) ? null : reader.GetString(8),
+                    DatExame = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
+                    DatInclusao = reader.IsDBNull(10) ? null : reader.GetDateTime(10),
+                    DatImpressao = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
+                    DesLaudo = reader.IsDBNull(12) ? null : reader.GetString(12),
+                    DatInvalidado = reader.IsDBNull(13) ? null : reader.GetDateTime(13),
+                    UsuarioInvalidaId = reader.IsDBNull(14) ? null : reader.GetInt32(14),
+                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(15) ? 0 : reader.GetInt32(15))
                 };
             }
 
@@ -116,9 +121,9 @@ namespace VirchowAspNetApi.Services
             var cmd = connection.CreateCommand();
             cmd.CommandText = @"
                 INSERT INTO Laudo 
-                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatImpressao, DesLaudo, TipoLaudoId)
+                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatInclusao, DatImpressao, DesLaudo, TipoLaudoId)
                 VALUES 
-                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId);
+                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId);
                 SELECT last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
@@ -145,9 +150,9 @@ namespace VirchowAspNetApi.Services
             var cmd = connection.CreateCommand();
             cmd.CommandText = @"
                 INSERT INTO Laudo 
-                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatImpressao, DesLaudo, Laudo_complementar_id)
+                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatInclusao, DatImpressao, DesLaudo, Laudo_complementar_id)
                 VALUES 
-                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId, $laudoComplementarId);
+                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId, $laudoComplementarId);
                 SELECT last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
