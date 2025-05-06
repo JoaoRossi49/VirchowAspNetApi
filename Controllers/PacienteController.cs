@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using VirchowAspNetApi.Models;
 using VirchowAspNetApi.Services;
+using VirchowAspNetApi.DTOs;
 
 namespace VirchowAspNetApi.Controllers;
 
 [ApiController]
-//[Authorize]
+[Authorize]
 [Route("api/[controller]")]
 public class PacienteController : ControllerBase
 {
@@ -17,9 +18,6 @@ public class PacienteController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
-    public ActionResult<List<Paciente>> GetAll() => _service.GetAll();
-
     [HttpGet("{id}")]
     public ActionResult<Paciente> GetById(int id)
     {
@@ -27,11 +25,18 @@ public class PacienteController : ControllerBase
         return paciente is null ? NotFound() : Ok(paciente);
     }
 
+    [HttpPost("filter")]
+    public ActionResult<Paciente> GetByFilter(PacienteFilter paciente)
+    {
+        var pacientes = _service.GetByFilter(paciente);
+        return pacientes is null ? NotFound() : Ok(pacientes);
+    }
+
     [HttpPost]
     public ActionResult<Paciente> Create(Paciente paciente)
     {
-        var novoProduto = _service.Add(paciente);
-        return CreatedAtAction(nameof(GetById), new { id = novoProduto.Id }, novoProduto);
+        var novoPaciente = _service.Add(paciente);
+        return CreatedAtAction(nameof(GetById), new { id = novoPaciente.Id }, novoPaciente);
     }
 
     [HttpPut("{id}")]

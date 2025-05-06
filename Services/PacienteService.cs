@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using VirchowAspNetApi.Models;
+using VirchowAspNetApi.DTOs;
 
 public class PacienteService
 {
@@ -23,43 +24,6 @@ public class PacienteService
             FOREIGN KEY (Estado_civil) REFERENCES EstadoCivil(Id)
         );";
         tableCmd.ExecuteNonQuery();
-    }
-
-    public List<Paciente> GetAll()
-    {
-        var pacientes = new List<Paciente>();
-
-        using var connection = new SqliteConnection(_connectionString);
-        connection.Open();
-
-        var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            SELECT 
-                p.Id, p.Nome, p.Flg_sexo, p.Dat_nascimento, 
-                p.Estado_civil, ec.Descricao, p.Profissao, p.Procedencia
-            FROM Paciente p
-            LEFT JOIN EstadoCivil ec ON ec.Id = p.Estado_civil";
-
-        using var reader = cmd.ExecuteReader();
-        while (reader.Read())
-        {
-            pacientes.Add(new Paciente
-            {
-                Id = reader.GetInt32(0),
-                Nome = reader.GetString(1),
-                Sexo = reader.IsDBNull(2) ? null : reader.GetString(2),
-                DatNascimento = reader.IsDBNull(3) ? null : reader.GetDateTime(3),
-                EstadoCivil = reader.IsDBNull(4) ? null : new EstadoCivil
-                {
-                    Id = reader.GetInt32(4),
-                    Descricao = reader.IsDBNull(5) ? null : reader.GetString(5)
-                },
-                Profissao = reader.IsDBNull(6) ? null : reader.GetString(6),
-                Procedencia = reader.IsDBNull(7) ? null : reader.GetString(7)
-            });
-        }
-
-        return pacientes;
     }
 
     public Paciente? GetById(int id)
@@ -97,6 +61,47 @@ public class PacienteService
         }
 
         return null;
+    }
+
+    public List<Paciente> GetByFilter(PacienteFilter paciente)
+    {
+        var pacientes = new List<Paciente>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            SELECT 
+                p.Id, p.Nome, p.Flg_sexo, p.Dat_nascimento, 
+                p.Estado_civil, ec.Descricao, p.Profissao, p.Procedencia
+            FROM Paciente p
+            LEFT JOIN EstadoCivil ec ON ec.Id = p.Estado_civil
+            WHERE 1 = 1 " +
+            (!String.IsNullOrEmpty(paciente.Nome) ? $"AND p.Nome like '%{paciente.Nome}%'" : "") +
+            (paciente.DatNascimento != null ? $"AND p.Dat_nascimento = '{paciente.DatNascimento:yyyy-MM-ddTHH:mm:ss.fff}'" : "");
+
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            pacientes.Add(new Paciente
+            {
+                Id = reader.GetInt32(0),
+                Nome = reader.GetString(1),
+                Sexo = reader.IsDBNull(2) ? null : reader.GetString(2),
+                DatNascimento = reader.IsDBNull(3) ? null : reader.GetDateTime(3),
+                EstadoCivil = reader.IsDBNull(4) ? null : new EstadoCivil
+                {
+                    Id = reader.GetInt32(4),
+                    Descricao = reader.IsDBNull(5) ? null : reader.GetString(5)
+                },
+                Profissao = reader.IsDBNull(6) ? null : reader.GetString(6),
+                Procedencia = reader.IsDBNull(7) ? null : reader.GetString(7)
+            });
+        }
+
+        return pacientes;
     }
 
     public Paciente Add(Paciente paciente)
