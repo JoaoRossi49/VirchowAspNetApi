@@ -46,17 +46,17 @@ public class PacienteService
         {
             return new Paciente
             {
-                Id = reader.GetInt32(0),
-                Nome = reader.GetString(1),
-                Sexo = reader.IsDBNull(2) ? null : reader.GetString(2),
-                DatNascimento = reader.IsDBNull(3) ? null : reader.GetDateTime(3),
-                EstadoCivil = reader.IsDBNull(4) ? null : new EstadoCivil
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Nome = reader.GetString(reader.GetOrdinal("Nome")),
+                Sexo = reader.IsDBNull(reader.GetOrdinal("Flg_sexo")) ? null : reader.GetString(reader.GetOrdinal("Flg_sexo")),
+                DatNascimento = reader.IsDBNull(reader.GetOrdinal("Dat_nascimento")) ? null : reader.GetDateTime(reader.GetOrdinal("Dat_nascimento")),
+                EstadoCivil = reader.IsDBNull(reader.GetOrdinal("Estado_civil")) ? null : new EstadoCivil
                 {
-                    Id = reader.GetInt32(4),
-                    Descricao = reader.IsDBNull(5) ? null : reader.GetString(5)
+                    Id = reader.GetInt32(reader.GetOrdinal("Estado_civil")),
+                    Descricao = reader.IsDBNull(reader.GetOrdinal("Descricao")) ? null : reader.GetString(reader.GetOrdinal("Descricao"))
                 },
-                Profissao = reader.IsDBNull(6) ? null : reader.GetString(6),
-                Procedencia = reader.IsDBNull(7) ? null : reader.GetString(7)
+                Profissao = reader.IsDBNull(reader.GetOrdinal("Profissao")) ? null : reader.GetString(reader.GetOrdinal("Profissao")),
+                Procedencia = reader.IsDBNull(reader.GetOrdinal("Procedencia")) ? null : reader.GetString(reader.GetOrdinal("Procedencia"))
             };
         }
 
@@ -79,7 +79,7 @@ public class PacienteService
             LEFT JOIN EstadoCivil ec ON ec.Id = p.Estado_civil
             WHERE 1 = 1 " +
             (!String.IsNullOrEmpty(paciente.Nome) ? $"AND p.Nome like '%{paciente.Nome}%'" : "") +
-            (paciente.DatNascimento != null ? $"AND p.Dat_nascimento = '{paciente.DatNascimento:yyyy-MM-ddTHH:mm:ss.fff}'" : "");
+            (paciente.DatNascimento != null ? $"AND p.Dat_nascimento = '{paciente.DatNascimento:yyyy-MM-dd HH:mm:ss}'" : "");
 
 
         using var reader = cmd.ExecuteReader();
@@ -87,17 +87,18 @@ public class PacienteService
         {
             pacientes.Add(new Paciente
             {
-                Id = reader.GetInt32(0),
-                Nome = reader.GetString(1),
-                Sexo = reader.IsDBNull(2) ? null : reader.GetString(2),
-                DatNascimento = reader.IsDBNull(3) ? null : reader.GetDateTime(3),
-                EstadoCivil = reader.IsDBNull(4) ? null : new EstadoCivil
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Nome = reader.GetString(reader.GetOrdinal("Nome")),
+                Sexo = reader.IsDBNull(reader.GetOrdinal("Flg_sexo")) ? null : reader.GetString(reader.GetOrdinal("Flg_sexo")),
+                DatNascimento = reader.IsDBNull(reader.GetOrdinal("Dat_nascimento")) ? null : reader.GetDateTime(reader.GetOrdinal("Dat_nascimento")),
+                EstadoCivil = reader.IsDBNull(reader.GetOrdinal("Estado_civil")) ? null : new EstadoCivil
                 {
-                    Id = reader.GetInt32(4),
-                    Descricao = reader.IsDBNull(5) ? null : reader.GetString(5)
+                    Id = reader.GetInt32(reader.GetOrdinal("Estado_civil")),
+                    Descricao = reader.IsDBNull(reader.GetOrdinal("Descricao")) ? null : reader.GetString(reader.GetOrdinal("Descricao"))
                 },
-                Profissao = reader.IsDBNull(6) ? null : reader.GetString(6),
-                Procedencia = reader.IsDBNull(7) ? null : reader.GetString(7)
+                Profissao = reader.IsDBNull(reader.GetOrdinal("Profissao")) ? null : reader.GetString(reader.GetOrdinal("Profissao")),
+                Procedencia = reader.IsDBNull(reader.GetOrdinal("Procedencia")) ? null : reader.GetString(reader.GetOrdinal("Procedencia"))
+
             });
         }
 

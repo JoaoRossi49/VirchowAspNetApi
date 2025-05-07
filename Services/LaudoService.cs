@@ -53,22 +53,72 @@ namespace VirchowAspNetApi.Services
                 TipoLaudoService tipoLaudoService = new TipoLaudoService();
                 laudos.Add(new Laudo
                 {
-                    Id = reader.GetInt32(0),
-                    NroLaudo = reader.IsDBNull(1) ? null : reader.GetInt32(1),
-                    NomePaciente = reader.GetString(2),
-                    Idade = reader.IsDBNull(3) ? null : reader.GetString(3),
-                    EstadoCivil = reader.IsDBNull(4) ? null : reader.GetString(4),
-                    ResumoClinico = reader.IsDBNull(5) ? null : reader.GetString(5),
-                    HipoteseDiagnostica = reader.IsDBNull(6) ? null : reader.GetString(6),
-                    DatUltimaMenstruacao = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
-                    MedicoRequisitante = reader.IsDBNull(8) ? null : reader.GetString(8),
-                    DatExame = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
-                    DatInclusao = reader.IsDBNull(10) ? null : reader.GetDateTime(10),
-                    DatImpressao = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
-                    DesLaudo = reader.IsDBNull(12) ? null : reader.GetString(12),
-                    DatInvalidado = reader.IsDBNull(13) ? null : reader.GetDateTime(13),
-                    UsuarioInvalidaId = reader.IsDBNull(14) ? null : reader.GetInt32(14),
-                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(15) ? 0 : reader.GetInt32(15))
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    NroLaudo = reader.IsDBNull(reader.GetOrdinal("NroLaudo")) ? null : reader.GetInt32(reader.GetOrdinal("NroLaudo")),
+                    NomePaciente = reader.GetString(reader.GetOrdinal("NomePaciente")),
+                    Idade = reader.IsDBNull(reader.GetOrdinal("Idade")) ? null : reader.GetString(reader.GetOrdinal("Idade")),
+                    EstadoCivil = reader.IsDBNull(reader.GetOrdinal("EstadoCivil")) ? null : reader.GetString(reader.GetOrdinal("EstadoCivil")),
+                    ResumoClinico = reader.IsDBNull(reader.GetOrdinal("ResumoClinico")) ? null : reader.GetString(reader.GetOrdinal("ResumoClinico")),
+                    HipoteseDiagnostica = reader.IsDBNull(reader.GetOrdinal("HipoteseDiagnostica")) ? null : reader.GetString(reader.GetOrdinal("HipoteseDiagnostica")),
+                    DatUltimaMenstruacao = reader.IsDBNull(reader.GetOrdinal("DatUltimaMenstruacao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatUltimaMenstruacao")),
+                    MedicoRequisitante = reader.IsDBNull(reader.GetOrdinal("MedicoRequisitante")) ? null : reader.GetString(reader.GetOrdinal("MedicoRequisitante")),
+                    DatExame = reader.IsDBNull(reader.GetOrdinal("DatExame")) ? null : reader.GetDateTime(reader.GetOrdinal("DatExame")),
+                    DatInclusao = reader.IsDBNull(reader.GetOrdinal("DatInclusao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatInclusao")),
+                    DatImpressao = reader.IsDBNull(reader.GetOrdinal("DatImpressao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatImpressao")),
+                    DesLaudo = reader.IsDBNull(reader.GetOrdinal("DesLaudo")) ? null : reader.GetString(reader.GetOrdinal("DesLaudo")),
+                    DatInvalidado = reader.IsDBNull(reader.GetOrdinal("DatInvalidado")) ? null : reader.GetDateTime(reader.GetOrdinal("DatInvalidado")),
+                    UsuarioInvalidaId = reader.IsDBNull(reader.GetOrdinal("Usuario_Invalida_Id")) ? null : reader.GetInt32(reader.GetOrdinal("Usuario_Invalida_Id")),
+                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(reader.GetOrdinal("TipoLaudoId")) ? 0 : reader.GetInt32(reader.GetOrdinal("TipoLaudoId")))
+                });
+            }
+
+            return laudos;
+        }
+
+        public List<Laudo> GetByFilter(LaudoFilter laudo)
+        {
+            var laudos = new List<Laudo>();
+
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            var cmd = connection.CreateCommand();
+            string query = "SELECT * FROM Laudo p WHERE p.DatInvalidado IS NULL";
+
+            if (!string.IsNullOrEmpty(laudo.NomePaciente))
+            {
+                query += $" AND p.Nome LIKE '%{laudo.NomePaciente}%'";
+            }
+
+            if (laudo.DatNascimento != null)
+            {
+                query += $" AND p.Dat_nascimento = '{laudo.DatNascimento:yyyy-MM-ddTHH:mm:ss.fff}'";
+            }
+
+            cmd.CommandText = query;
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                TipoLaudoService tipoLaudoService = new TipoLaudoService();
+                laudos.Add(new Laudo
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    NroLaudo = reader.IsDBNull(reader.GetOrdinal("NroLaudo")) ? null : reader.GetInt32(reader.GetOrdinal("NroLaudo")),
+                    NomePaciente = reader.GetString(reader.GetOrdinal("NomePaciente")),
+                    Idade = reader.IsDBNull(reader.GetOrdinal("Idade")) ? null : reader.GetString(reader.GetOrdinal("Idade")),
+                    EstadoCivil = reader.IsDBNull(reader.GetOrdinal("EstadoCivil")) ? null : reader.GetString(reader.GetOrdinal("EstadoCivil")),
+                    ResumoClinico = reader.IsDBNull(reader.GetOrdinal("ResumoClinico")) ? null : reader.GetString(reader.GetOrdinal("ResumoClinico")),
+                    HipoteseDiagnostica = reader.IsDBNull(reader.GetOrdinal("HipoteseDiagnostica")) ? null : reader.GetString(reader.GetOrdinal("HipoteseDiagnostica")),
+                    DatUltimaMenstruacao = reader.IsDBNull(reader.GetOrdinal("DatUltimaMenstruacao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatUltimaMenstruacao")),
+                    MedicoRequisitante = reader.IsDBNull(reader.GetOrdinal("MedicoRequisitante")) ? null : reader.GetString(reader.GetOrdinal("MedicoRequisitante")),
+                    DatExame = reader.IsDBNull(reader.GetOrdinal("DatExame")) ? null : reader.GetDateTime(reader.GetOrdinal("DatExame")),
+                    DatInclusao = reader.IsDBNull(reader.GetOrdinal("DatInclusao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatInclusao")),
+                    DatImpressao = reader.IsDBNull(reader.GetOrdinal("DatImpressao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatImpressao")),
+                    DesLaudo = reader.IsDBNull(reader.GetOrdinal("DesLaudo")) ? null : reader.GetString(reader.GetOrdinal("DesLaudo")),
+                    DatInvalidado = reader.IsDBNull(reader.GetOrdinal("DatInvalidado")) ? null : reader.GetDateTime(reader.GetOrdinal("DatInvalidado")),
+                    UsuarioInvalidaId = reader.IsDBNull(reader.GetOrdinal("Usuario_Invalida_Id")) ? null : reader.GetInt32(reader.GetOrdinal("Usuario_Invalida_Id")),
+                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(reader.GetOrdinal("TipoLaudoId")) ? 0 : reader.GetInt32(reader.GetOrdinal("TipoLaudoId")))
                 });
             }
 
@@ -91,22 +141,23 @@ namespace VirchowAspNetApi.Services
             {
                 return new Laudo
                 {
-                    Id = reader.GetInt32(0),
-                    NroLaudo = reader.IsDBNull(1) ? null : reader.GetInt32(1),
-                    NomePaciente = reader.GetString(2),
-                    Idade = reader.IsDBNull(3) ? null : reader.GetString(3),
-                    EstadoCivil = reader.IsDBNull(4) ? null : reader.GetString(4),
-                    ResumoClinico = reader.IsDBNull(5) ? null : reader.GetString(5),
-                    HipoteseDiagnostica = reader.IsDBNull(6) ? null : reader.GetString(6),
-                    DatUltimaMenstruacao = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
-                    MedicoRequisitante = reader.IsDBNull(8) ? null : reader.GetString(8),
-                    DatExame = reader.IsDBNull(9) ? null : reader.GetDateTime(9),
-                    DatInclusao = reader.IsDBNull(10) ? null : reader.GetDateTime(10),
-                    DatImpressao = reader.IsDBNull(11) ? null : reader.GetDateTime(11),
-                    DesLaudo = reader.IsDBNull(12) ? null : reader.GetString(12),
-                    DatInvalidado = reader.IsDBNull(13) ? null : reader.GetDateTime(13),
-                    UsuarioInvalidaId = reader.IsDBNull(14) ? null : reader.GetInt32(14),
-                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(15) ? 0 : reader.GetInt32(15))
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    NroLaudo = reader.IsDBNull(reader.GetOrdinal("NroLaudo")) ? null : reader.GetInt32(reader.GetOrdinal("NroLaudo")),
+                    NomePaciente = reader.GetString(reader.GetOrdinal("NomePaciente")),
+                    Idade = reader.IsDBNull(reader.GetOrdinal("Idade")) ? null : reader.GetString(reader.GetOrdinal("Idade")),
+                    EstadoCivil = reader.IsDBNull(reader.GetOrdinal("EstadoCivil")) ? null : reader.GetString(reader.GetOrdinal("EstadoCivil")),
+                    ResumoClinico = reader.IsDBNull(reader.GetOrdinal("ResumoClinico")) ? null : reader.GetString(reader.GetOrdinal("ResumoClinico")),
+                    HipoteseDiagnostica = reader.IsDBNull(reader.GetOrdinal("HipoteseDiagnostica")) ? null : reader.GetString(reader.GetOrdinal("HipoteseDiagnostica")),
+                    DatUltimaMenstruacao = reader.IsDBNull(reader.GetOrdinal("DatUltimaMenstruacao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatUltimaMenstruacao")),
+                    MedicoRequisitante = reader.IsDBNull(reader.GetOrdinal("MedicoRequisitante")) ? null : reader.GetString(reader.GetOrdinal("MedicoRequisitante")),
+                    DatExame = reader.IsDBNull(reader.GetOrdinal("DatExame")) ? null : reader.GetDateTime(reader.GetOrdinal("DatExame")),
+                    DatInclusao = reader.IsDBNull(reader.GetOrdinal("DatInclusao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatInclusao")),
+                    DatImpressao = reader.IsDBNull(reader.GetOrdinal("DatImpressao")) ? null : reader.GetDateTime(reader.GetOrdinal("DatImpressao")),
+                    DesLaudo = reader.IsDBNull(reader.GetOrdinal("DesLaudo")) ? null : reader.GetString(reader.GetOrdinal("DesLaudo")),
+                    DatInvalidado = reader.IsDBNull(reader.GetOrdinal("DatInvalidado")) ? null : reader.GetDateTime(reader.GetOrdinal("DatInvalidado")),
+                    UsuarioInvalidaId = reader.IsDBNull(reader.GetOrdinal("Usuario_Invalida_Id")) ? null : reader.GetInt32(reader.GetOrdinal("Usuario_Invalida_Id")),
+                    TipoLaudo = tipoLaudoService.GetById(reader.IsDBNull(reader.GetOrdinal("TipoLaudoId")) ? 0 : reader.GetInt32(reader.GetOrdinal("TipoLaudoId")))
+
                 };
             }
 
@@ -188,7 +239,7 @@ namespace VirchowAspNetApi.Services
                     DatUltimaMenstruacao = $datUltMenstr,
                     MedicoRequisitante = $medico,
                     DatExame = $datExame,
-                    DatImpressao = $datImpressao,
+                    DatImpressao = DATETIME('now', 'localtime'),
                     DesLaudo = $desLaudo,
                     DatInvalidado = $datInvalidado,
                     TipoLaudoId = $tipoLaudoId,
@@ -204,7 +255,6 @@ namespace VirchowAspNetApi.Services
             cmd.Parameters.AddWithValue("$datUltMenstr", laudo.DatUltimaMenstruacao ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$medico", laudo.MedicoRequisitante ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$datExame", laudo.DatExame ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("$datImpressao", laudo.DatImpressao ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$desLaudo", laudo.DesLaudo ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$datInvalidado", laudo.DatInvalidado ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$tipoLaudoId", laudo.TipoLaudo.Id > 0 ? laudo.TipoLaudo.Id : (object)DBNull.Value);

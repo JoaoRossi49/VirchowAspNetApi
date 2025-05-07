@@ -33,4 +33,13 @@ namespace VirchowAspNetApi.DTOs
         public int LaudoComplementarId { get; set; }
     }
 
+    public class LaudoFilter
+    {
+        public int? NroLaudo { get; set; }
+        public string? NomePaciente { get; set; }
+        public DateTime? DatNascimento { get; set; }
+        public DateTime? DatInclusao { get; set; }
+        public TipoLaudo? TipoLaudo { get; set; }
+    }
+
 }
