@@ -85,14 +85,24 @@ namespace VirchowAspNetApi.Services
             var cmd = connection.CreateCommand();
             string query = "SELECT * FROM Laudo p WHERE p.DatInvalidado IS NULL";
 
+            if (laudo.NroLaudo > 0)
+            {
+                query += $" AND p.NroLaudo LIKE '%{laudo.NroLaudo}%'";
+            }
+
             if (!string.IsNullOrEmpty(laudo.NomePaciente))
             {
-                query += $" AND p.Nome LIKE '%{laudo.NomePaciente}%'";
+                query += $" AND p.NomePaciente LIKE '%{laudo.NomePaciente}%'";
             }
 
             if (laudo.DatNascimento != null)
             {
                 query += $" AND p.Dat_nascimento = '{laudo.DatNascimento:yyyy-MM-ddTHH:mm:ss.fff}'";
+            }
+
+            if (laudo.DatInclusaoInicial != null && laudo.DatInclusaoFinal != null)
+            {
+                query += $" AND p.DatInclusao BETWEEN '{laudo.DatInclusaoInicial:yyyy-MM-ddTHH:mm:ss.fff}' and '{laudo.DatInclusaoFinal:yyyy-MM-ddTHH:mm:ss.fff}'";
             }
 
             cmd.CommandText = query;
@@ -170,12 +180,39 @@ namespace VirchowAspNetApi.Services
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            cmd.CommandText = @"
-                INSERT INTO Laudo 
-                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatInclusao, DatImpressao, DesLaudo, TipoLaudoId)
-                VALUES 
-                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId);
-                SELECT last_insert_rowid();";
+            cmd.CommandText = @"INSERT
+	                                INTO
+	                                Laudo 
+                                   (NomePaciente,
+	                                Idade,
+	                                EstadoCivil,
+	                                ResumoClinico,
+	                                HipoteseDiagnostica,
+	                                DatUltimaMenstruacao,
+	                                MedicoRequisitante,
+	                                DatExame,
+	                                DatInclusao,
+	                                DatImpressao,
+	                                DesLaudo,
+	                                TipoLaudoId)
+                                VALUES 
+                                                ($nomePaciente,
+                                $idade,
+                                $estadoCivil,
+                                $resumoClinico,
+                                $hipotese,
+                                $datUltMenstr,
+                                $medico,
+                                $datExame,
+                                DATETIME('now',
+                                'localtime'),
+                                DATETIME('now',
+                                'localtime'),
+                                $desLaudo,
+                                $tipoLaudoId);
+
+                                SELECT
+	                                last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
             cmd.Parameters.AddWithValue("$idade", laudo.Idade ?? (object)DBNull.Value);
@@ -199,12 +236,40 @@ namespace VirchowAspNetApi.Services
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            cmd.CommandText = @"
-                INSERT INTO Laudo 
-                (NomePaciente, Idade, EstadoCivil, ResumoClinico, HipoteseDiagnostica, DatUltimaMenstruacao, MedicoRequisitante, DatExame, DatInclusao, DatImpressao, DesLaudo, Laudo_complementar_id)
-                VALUES 
-                ($nomePaciente, $idade, $estadoCivil, $resumoClinico, $hipotese, $datUltMenstr, $medico, $datExame, DATETIME('now', 'localtime'), DATETIME('now', 'localtime'), $desLaudo, $tipoLaudoId, $laudoComplementarId);
-                SELECT last_insert_rowid();";
+            cmd.CommandText = @"INSERT
+	                                INTO
+	                                Laudo 
+                                   (NomePaciente,
+	                                Idade,
+	                                EstadoCivil,
+	                                ResumoClinico,
+	                                HipoteseDiagnostica,
+	                                DatUltimaMenstruacao,
+	                                MedicoRequisitante,
+	                                DatExame,
+	                                DatInclusao,
+	                                DatImpressao,
+	                                DesLaudo,
+	                                Laudo_complementar_id)
+                                VALUES 
+                                                ($nomePaciente,
+                                $idade,
+                                $estadoCivil,
+                                $resumoClinico,
+                                $hipotese,
+                                $datUltMenstr,
+                                $medico,
+                                $datExame,
+                                DATETIME('now',
+                                'localtime'),
+                                DATETIME('now',
+                                'localtime'),
+                                $desLaudo,
+                                $tipoLaudoId,
+                                $laudoComplementarId);
+
+                                SELECT
+	                                last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
             cmd.Parameters.AddWithValue("$idade", laudo.Idade ?? (object)DBNull.Value);

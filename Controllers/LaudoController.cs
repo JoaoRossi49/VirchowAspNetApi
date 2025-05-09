@@ -28,6 +28,13 @@ public class LaudoController : ControllerBase
         return laudo is null ? NotFound() : Ok(laudo);
     }
 
+    [HttpPost("filter")]
+    public ActionResult<Laudo> GetByFilter(LaudoFilter laudo)
+    {
+        var laudos = _service.GetByFilter(laudo);
+        return laudos is null ? NotFound() : Ok(laudos);
+    }
+
     [HttpPost]
     public ActionResult<LaudoRequest> Create(LaudoRequest laudo)
     {
