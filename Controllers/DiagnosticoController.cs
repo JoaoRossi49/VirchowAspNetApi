@@ -18,9 +18,9 @@ public class DiagnosticoController : ControllerBase
     }
 
     [HttpGet("{exameId}")]
-    public ActionResult<List<Diagnostico>> GetByExameId(int id)
+    public ActionResult<List<Diagnostico>> GetByExameId(int exameId)
     {
-        var diagnostico = _service.GetByExameId(id);
+        var diagnostico = _service.GetByExameId(exameId);
         return diagnostico is null ? NotFound() : Ok(diagnostico);
     }
 }

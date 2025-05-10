@@ -88,7 +88,7 @@ namespace VirchowAspNetApi.Services
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            string query = "SELECT * FROM Laudo p";
+            string query = "SELECT * FROM Laudo p WHERE 1 = 1";
 
             if (laudo.NroLaudo > 0)
             {
@@ -102,7 +102,7 @@ namespace VirchowAspNetApi.Services
 
             if (laudo.DatNascimento != null)
             {
-                query += $" AND p.Dat_nascimento = '{laudo.DatNascimento:yyyy-MM-ddTHH:mm:ss.fff}'";
+                query += $" AND p.DatNascimento = '{laudo.DatNascimento:yyyy-MM-dd HH:mm:ss}'";
             }
 
             if (laudo.DatInclusaoInicial != null && laudo.DatInclusaoFinal != null)
@@ -181,6 +181,27 @@ namespace VirchowAspNetApi.Services
             return null;
         }
 
+        public int? GetLastNroLaudoByExameId(int exameId)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = $"SELECT max(NroLaudo) as NroLaudo FROM Laudo WHERE ExameId = {exameId}";
+
+            ExameService exameService = new ExameService();
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                int nroUltimoLaudo = reader.IsDBNull(reader.GetOrdinal("NroLaudo")) ? 0 : reader.GetInt32(reader.GetOrdinal("NroLaudo"));
+
+                return nroUltimoLaudo;
+            }
+
+            return 0;
+        }
+
         public LaudoRequest Add(LaudoRequest laudo)
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -191,6 +212,7 @@ namespace VirchowAspNetApi.Services
 	                                INTO
 	                                Laudo 
                                    (NomePaciente,
+                                    NroLaudo,
 	                                Idade,
 	                                EstadoCivil,
 	                                ResumoClinico,
@@ -205,6 +227,7 @@ namespace VirchowAspNetApi.Services
 	                                ExameId)
                                 VALUES 
                                ($nomePaciente,
+                                $nroLaudo,
                                 $idade,
                                 $estadoCivil,
                                 $resumoClinico,
@@ -224,6 +247,7 @@ namespace VirchowAspNetApi.Services
 	                                last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
+            cmd.Parameters.AddWithValue("$nroLaudo", GetLastNroLaudoByExameId(laudo.ExameId)+1);
             cmd.Parameters.AddWithValue("$idade", laudo.Idade ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$estadoCivil", laudo.EstadoCivil ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$resumoClinico", laudo.ResumoClinico ?? (object)DBNull.Value);
@@ -250,6 +274,7 @@ namespace VirchowAspNetApi.Services
 	                                INTO
 	                                Laudo 
                                    (NomePaciente,
+                                    NroLaudo,
 	                                Idade,
 	                                EstadoCivil,
 	                                ResumoClinico,
@@ -264,6 +289,7 @@ namespace VirchowAspNetApi.Services
 	                                Laudo_complementar_id)
                                 VALUES 
                                ($nomePaciente,
+                                $nroLaudo,
                                 $idade,
                                 $estadoCivil,
                                 $resumoClinico,
@@ -284,6 +310,7 @@ namespace VirchowAspNetApi.Services
 	                                last_insert_rowid();";
 
             cmd.Parameters.AddWithValue("$nomePaciente", laudo.NomePaciente);
+            cmd.Parameters.AddWithValue("$nroLaudo", GetLastNroLaudoByExameId(laudo.ExameId)+1);
             cmd.Parameters.AddWithValue("$idade", laudo.Idade ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$estadoCivil", laudo.EstadoCivil ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("$resumoClinico", laudo.ResumoClinico ?? (object)DBNull.Value);
