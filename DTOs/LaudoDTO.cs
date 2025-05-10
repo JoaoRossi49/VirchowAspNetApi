@@ -12,9 +12,10 @@ namespace VirchowAspNetApi.DTOs
         public string HipoteseDiagnostica { get; set; }
         public DateTime? DatUltimaMenstruacao { get; set; }
         public string? MedicoRequisitante { get; set; }
+        public DateTime? DatNascimento { get; set; }
         public DateTime? DatExame { get; set; }
         public string DesLaudo { get; set; }
-        public int TipoLaudoId { get; set; }
+        public int ExameId { get; set; }
     }
 
     public class LaudoComplementarRequest
@@ -27,9 +28,10 @@ namespace VirchowAspNetApi.DTOs
         public string HipoteseDiagnostica { get; set; }
         public DateTime? DatUltimaMenstruacao { get; set; }
         public string? MedicoRequisitante { get; set; }
+        public DateTime? DatNascimento { get; set; }
         public DateTime? DatExame { get; set; }
         public string DesLaudo { get; set; }
-        public int TipoLaudoId { get; set; }
+        public int ExameId { get; set; }
         public int LaudoComplementarId { get; set; }
     }
 
@@ -40,7 +42,7 @@ namespace VirchowAspNetApi.DTOs
         public DateTime? DatNascimento { get; set; }
         public DateTime? DatInclusaoInicial { get; set; }
         public DateTime? DatInclusaoFinal { get; set; }
-        public TipoLaudo? TipoLaudo { get; set; }
+        public int ExameId { get; set; }
     }
 
 }

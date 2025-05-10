@@ -13,12 +13,13 @@ namespace VirchowAspNetApi.Models
         public string HipoteseDiagnostica { get; set; }
         public DateTime? DatUltimaMenstruacao { get; set; }
         public string? MedicoRequisitante { get; set; }
+        public DateTime? DatNascimento { get; set; }
         public DateTime? DatExame { get; set; }
         public DateTime? DatInclusao { get; set; }
         public DateTime? DatImpressao { get; set; }
         public DateTime? DatInvalidado { get; set; }
         public int? UsuarioInvalidaId { get; set; }
-        public TipoLaudo? TipoLaudo { get; set; }
+        public Exame Exame { get; set; }
         public string DesLaudo { get; set; }
     }
 }

@@ -3,48 +3,49 @@ using VirchowAspNetApi.Models;
 
 namespace VirchowAspNetApi.Services;
 
-    public class MascaraService
+    public class DiagnosticoService
     {
         private readonly string _connectionString = "Data Source=virchow.db";
 
-        public MascaraService()
+        public DiagnosticoService()
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var tableCmd = connection.CreateCommand();
             tableCmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS Mascara (
+            CREATE TABLE IF NOT EXISTS Diagnostico (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Nome TEXT NOT NULL,
+                ExameId INTEGER NOT NULL,
+                Codigo TEXT NOT NULL,
                 Conteudo TEXT NOT NULL,
                 Dat_fim DATE
             );";
             tableCmd.ExecuteNonQuery();
         }
 
-        public List<Mascara> GetAll()
+        public List<Diagnostico> GetByExameId(int exameId)
         {
-            var mascaras = new List<Mascara>();
+            var Diagnosticos = new List<Diagnostico>();
 
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM Mascara WHERE Dat_fim is null";
+            cmd.CommandText = $"SELECT * FROM Diagnostico WHERE Dat_fim is null AND ExameId = {exameId}";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                mascaras.Add(new Mascara
+                Diagnosticos.Add(new Diagnostico
                 {
-                    Id = reader.GetInt32(0),
-                    Nome = reader.GetString(1),
-                    Conteudo = reader.GetString(2)
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    Codigo = reader.GetString(reader.GetOrdinal("Codigo")),
+                    Conteudo = reader.GetString(reader.GetOrdinal("Conteudo"))
                 });
             }
 
-            return mascaras;
+            return Diagnosticos;
         }
 
 }

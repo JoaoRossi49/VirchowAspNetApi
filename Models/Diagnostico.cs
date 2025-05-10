@@ -1,10 +1,9 @@
 namespace VirchowAspNetApi.Models
 {
-    public class TipoLaudo
+    public class Diagnostico
     {
         public int Id { get; set; }
-        public string Nome { get; set; }
-        public string Grupo { get; set; }
+        public string Codigo { get; set; }
         public string Conteudo { get; set; }
     }
 }

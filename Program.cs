@@ -18,11 +18,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<DiagnosticoService>();
 builder.Services.AddScoped<EstadoCivilService>();
+builder.Services.AddScoped<ExameService>();
 builder.Services.AddScoped<LaudoService>();
-builder.Services.AddScoped<MascaraService>();
 builder.Services.AddScoped<PacienteService>();
-builder.Services.AddScoped<TipoLaudoService>();
+builder.Services.AddScoped<TopicoService>();
 builder.Services.AddScoped<UsuarioService>();
 
 

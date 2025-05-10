@@ -8,16 +8,16 @@ namespace VirchowAspNetApi.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
-public class MascaraController : ControllerBase
+public class ExameController : ControllerBase
 {
-    private readonly MascaraService _service;
+    private readonly ExameService _service;
 
-    public MascaraController(MascaraService service)
+    public ExameController(ExameService service)
     {
         _service = service;
     }
 
     [HttpGet]
-    public ActionResult<List<Mascara>> GetAll() => _service.GetAll();
+    public ActionResult<List<Exame>> GetAll() => _service.GetAll();
 
 }

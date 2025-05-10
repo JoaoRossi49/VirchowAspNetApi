@@ -3,49 +3,43 @@ using VirchowAspNetApi.Models;
 
 namespace VirchowAspNetApi.Services;
 
-    public class EstadoCivilService
+    public class TopicoService
     {
         private readonly string _connectionString = "Data Source=virchow.db";
 
-        public EstadoCivilService()
+        public TopicoService()
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var tableCmd = connection.CreateCommand();
             tableCmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS EstadoCivil (
+            CREATE TABLE IF NOT EXISTS Topico (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Descricao TEXT NOT NULL,
+                ExameId INT NOT NULL,
+                Conteudo TEXT NOT NULL,
                 Dat_fim DATE
-            );
-
-            INSERT INTO EstadoCivil VALUES (1, 'Solteiro', null);
-            ";
+            );";
             tableCmd.ExecuteNonQuery();
         }
 
-        public List<EstadoCivil> GetAll()
+        public List<String> GetByExameId(int ExameId)
         {
-            var estadosCivis = new List<EstadoCivil>();
+            var Topicos = new List<String>();
 
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM EstadoCivil WHERE Dat_fim is null";
+            cmd.CommandText = $"SELECT * FROM Topico WHERE Dat_fim is null AND ExameId = {ExameId}";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                estadosCivis.Add(new EstadoCivil
-                {
-                    Id = reader.GetInt32(0),
-                    Descricao = reader.GetString(1)
-                });
+                Topicos.Add(reader.GetString(reader.GetOrdinal("Conteudo")));
             }
 
-            return estadosCivis;
+            return Topicos;
         }
 
 }

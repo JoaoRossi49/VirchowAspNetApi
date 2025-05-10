@@ -19,7 +19,10 @@ public class LaudoController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<Laudo>> GetAll() => _service.GetAll();
+    public ActionResult<List<Laudo>> GetAll() => _service.GetAll(false);
+
+    [HttpGet("invalidados")]
+    public ActionResult<List<Laudo>> GetAllInvalidados() => _service.GetAll(true);
 
     [HttpGet("{id}")]
     public ActionResult<Laudo> GetById(int id)
@@ -43,7 +46,7 @@ public class LaudoController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Laudo laudo)
+    public IActionResult Update(int id, LaudoRequest laudo)
     {
         var atualizado = _service.Update(id, laudo);
         return atualizado ? NoContent() : NotFound();

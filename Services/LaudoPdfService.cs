@@ -42,7 +42,7 @@ public class LaudoPdfService
 
                         row.RelativeItem().AlignRight().Column(inner =>
                         {
-                            inner.Item().Text($"Nº {(laudo.TipoLaudo?.Grupo ?? "")}");
+                            inner.Item().Text($"Nº {(laudo.Exame.Nome ?? "")}");
                             inner.Item().Text($"{laudo.Id}").Bold();
                         });
 
